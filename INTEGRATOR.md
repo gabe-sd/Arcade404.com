@@ -205,7 +205,7 @@ alone until the whole of it is done.
 - **You merge each phase into it**, `--no-ff`, one at a time, suite after each.
   Everything in "Merging, step by step" applies unchanged with the integration branch
   standing where `main` does, the ancestor check included.
-- **Push the integration branch to `origin`.** Pages deploys from `main` only, so a
+- **Push the integration branch to `origin`.** Deploys happen from `main` only, so a
   side branch is not a deploy. It buys the recovery target below and an offsite copy
   of work that would otherwise be local-only for weeks. On a public repo the branch
   is public; say so before pushing.
@@ -247,9 +247,15 @@ that has happened here.
 ## Pushing
 
 `origin/main` is the live site. **A push is a deploy.** Confirm it rather than
-assuming, and make the answer easy: say whether the diff touches anything a visitor
-sees. Docs, tests and `package.json` alter nothing on the site; `index.html`,
-`shared.css` or any game page does.
+assuming, and make the answer easy: say whether the diff changes a page a visitor
+navigates to. `index.html`, `shared.css` or any game page does; docs, tests and
+`package.json` do not.
+
+Reachable by URL is a different question from navigated to, and worth saying once:
+the worker serves the repo root, so anything `.assetsignore` does not exclude can
+be fetched at its own path whether or not the site links to it. A doc goes public
+when it is pushed. That governs what is allowed into the repo rather than whether
+to push what is already there.
 
 ## Cleaning up
 
