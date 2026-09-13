@@ -205,7 +205,7 @@ alone until the whole of it is done.
 - **You merge each phase into it**, `--no-ff`, one at a time, suite after each.
   Everything in "Merging, step by step" applies unchanged with the integration branch
   standing where `main` does, the ancestor check included.
-- **Push the integration branch to `origin`.** Pages deploys from `main` only, so a
+- **Push the integration branch to `origin`.** Deploys happen from `main` only, so a
   side branch is not a deploy. It buys the recovery target below and an offsite copy
   of work that would otherwise be local-only for weeks. On a public repo the branch
   is public; say so before pushing.

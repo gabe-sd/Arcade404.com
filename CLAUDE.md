@@ -7,10 +7,16 @@ runtime dependencies. Files are served as-is. The only dependency in the repo is
 `playwright-core`, used by the browser tests and nothing else — keep it that way,
 and never make the site itself need a build or a package install to run.
 
-The repo is named `gabe-sd.github.io`, which makes it a GitHub Pages *user* site:
-it deploys from `main` to the domain root, not to a `/<repo>/` subpath. Every path
-in the site is relative, so nothing depends on that prefix either way — keep it
-relative, and a future rename stays a non-event.
+The site is live at `arcade404.com`, served by Cloudflare Workers straight from
+this repo: `wrangler.jsonc` configures the worker and names the directory to
+serve, and `.assetsignore` says what inside that directory must not be. Every push
+to `main` deploys. Neither file is a build step and neither is disposable — the
+"no build step, no framework" above is not licence to tidy them away, because
+without them there is no deploy.
+
+Every path in the site is relative, so moving the hosting and renaming the repo
+together changed nothing inside the site. Keep it relative and the next move stays
+a non-event too.
 
 Known gaps and unscheduled work live in `games/<name>/TODO.md` for a game,
 `design/TODO.md` for how the site looks, and the root `TODO.md` for everything

@@ -2,7 +2,7 @@
 
 A collection of browser games and an experiment in organizing Claude agents into a software development team.
 
-**[Play the arcade](https://gabe-sd.github.io/)**
+**[Play the arcade](https://arcade404.com/)**
 
 ## About the project
 
@@ -51,14 +51,14 @@ The goal is to ship features quickly, minimize costs, and maintain quality throu
 - No framework, build step, or runtime dependencies
 - Browser-driven tests using Playwright
 - Git branches and worktrees for isolated development
-- GitHub Pages for hosting
+- Cloudflare Workers for hosting
 
 ## Running locally
 
 Clone the repository and start the local server:
 
 ```bash
-git clone https://github.com/gabe-sd/gabe-sd.github.io.git
-cd gabe-sd.github.io
+git clone https://github.com/gabe-sd/arcade404.com.git
+cd arcade404.com
 npm run serve
 ```
