@@ -257,6 +257,12 @@ be fetched at its own path whether or not the site links to it. A doc goes publi
 when it is pushed. That governs what is allowed into the repo rather than whether
 to push what is already there.
 
+**The deploy is not instant.** The push returns when GitHub has the commit;
+Cloudflare builds and swaps the assets after that, and the live site here served
+the old page for roughly forty seconds afterwards. A curl straight after a push
+showing the old content is a deploy in flight, not a failed one — poll the live
+URL until it turns over, and only call the deploy landed then.
+
 ## Cleaning up
 
 A merged branch holds nothing that `main` does not: the merge commit is the record.
