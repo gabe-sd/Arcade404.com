@@ -18,7 +18,7 @@ Each agent has a specific role:
 - The **integrator** reviews code, runs tests, and manages releases.
 - The **art director** produces mockups and develops the visual direction.
 
-Different roles use different models. Workers use Sonnet for implementation. The integrator and art director use Opus for work that requires broader judgment. The integrator can consult a Fable advisor on key upstream decisions. The art director can delegate suitable tasks to cheaper subagents.
+Different roles use different models. Workers use Sonnet for implementation. The integrator and art director use Opus for work that requires broader judgment. The integrator can consult a more capable advisor on key upstream decisions. The art director can delegate suitable tasks to cheaper subagents.
 
 The roles have separate instructions, responsibilities, and boundaries. This gives each agent a clear area of ownership while keeping the final decisions with me.
 
