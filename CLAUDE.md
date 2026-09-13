@@ -13,7 +13,7 @@ serve, and `.assetsignore` says what inside that directory must not be. Every pu
 to `main` deploys. Neither file is a build step and neither is disposable — the
 "no build step, no framework" above is not licence to tidy them away. Delete
 `wrangler.jsonc` and there is no deploy at all; delete `.assetsignore` and the
-deploy still happens, serving everything it was there to hold back.
+deploy still happens, but what gets served is no longer decided here.
 
 Every path in the site is relative, so moving the hosting and renaming the repo
 together cost no path inside the site a single edit. What did change was the two

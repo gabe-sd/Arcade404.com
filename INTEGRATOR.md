@@ -247,12 +247,15 @@ that has happened here.
 ## Pushing
 
 `origin/main` is the live site. **A push is a deploy.** Confirm it rather than
-assuming, and make the answer easy: say whether the diff touches anything a visitor
-sees. `index.html`, `shared.css` or any game page does; docs, tests and
-`package.json` do not. They are still *published*, which Pages did not do: the
-worker serves the repo root, so anything `.assetsignore` does not exclude is
-fetchable at its own path. That is a reason to watch what enters the repo, not a
-reason to hold a push.
+assuming, and make the answer easy: say whether the diff changes a page a visitor
+navigates to. `index.html`, `shared.css` or any game page does; docs, tests and
+`package.json` do not.
+
+Reachable by URL is a different question from navigated to, and worth saying once:
+the worker serves the repo root, so anything `.assetsignore` does not exclude can
+be fetched at its own path whether or not the site links to it. A doc goes public
+when it is pushed. That governs what is allowed into the repo rather than whether
+to push what is already there.
 
 ## Cleaning up
 
