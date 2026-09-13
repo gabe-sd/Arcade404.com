@@ -248,8 +248,11 @@ that has happened here.
 
 `origin/main` is the live site. **A push is a deploy.** Confirm it rather than
 assuming, and make the answer easy: say whether the diff touches anything a visitor
-sees. Docs, tests and `package.json` alter nothing on the site; `index.html`,
-`shared.css` or any game page does.
+sees. `index.html`, `shared.css` or any game page does; docs, tests and
+`package.json` do not. They are still *published*, which Pages did not do: the
+worker serves the repo root, so anything `.assetsignore` does not exclude is
+fetchable at its own path. That is a reason to watch what enters the repo, not a
+reason to hold a push.
 
 ## Cleaning up
 
