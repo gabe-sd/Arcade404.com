@@ -5,3 +5,9 @@
 # to be remembered.
 node_modules
 .claude/
+
+# Local wrangler state - the emulated KV, D1, R2 and cache stores, and tmp.
+# It is in .assetsignore as well, and the two are not the same job: that file
+# stops it being served, this one stops it being committed by an `add -A`
+# after somebody has run `wrangler dev`.
+.wrangler

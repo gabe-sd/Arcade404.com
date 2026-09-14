@@ -253,9 +253,10 @@ navigates to. `index.html`, `shared.css` or any game page does; docs, tests and
 
 Reachable by URL is a different question from navigated to, and worth saying once:
 the worker serves the repo root, so anything `.assetsignore` does not exclude can
-be fetched at its own path whether or not the site links to it. A doc goes public
-when it is pushed. That governs what is allowed into the repo rather than whether
-to push what is already there.
+be fetched at its own path whether or not the site links to it. Docs, tests and
+`design/` are excluded, so they no longer go public on a push. What excludes them
+is a list rather than a boundary, though: a new top-level file or directory is
+served from the moment it lands until somebody adds it there.
 
 **The deploy is not instant.** The push returns when GitHub has the commit;
 Cloudflare builds and swaps the assets after that, and the live site here served
