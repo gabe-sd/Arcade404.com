@@ -1,5 +1,23 @@
+# What the deploy must not serve. Same syntax as .gitignore, so a pattern with
+# no slash matches at any depth - *.md catches every game's DESIGN.md as well as
+# the seat files at the root.
+#
+# Until this list grew past the repo's own plumbing, every doc, test and design
+# mockup was live at its own URL. What a visitor needs is the pages, the
+# stylesheets, hub.js and assets/; everything named below is machinery.
+
 .git
+.gitignore
+.claude
+.wrangler
 node_modules
+package.json
+package-lock.json
 wrangler.jsonc
 .assetsignore
-.wrangler
+
+# assets/fonts/OFL.txt is deliberately not here: the SIL Open Font License is
+# meant to travel with the fonts it covers.
+*.md
+tests
+design
