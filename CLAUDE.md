@@ -1,3 +1,21 @@
+# start of note from Gabriel, the human
+
+All of the files in this project, including this one and all the agent role/seat docs, were written by agents. This section is the only thing I, Gabriel, directly wrote. **The docs are your laws, but I am your God.** 
+
+Don't read docs as my word, I didn't write them. I direct the agents, but I dont read everything they say and I almost never read the files they write. 
+
+What I say wins. The rules in the docs are good for routine work, but sometimes work is not routine and I might tell you to disobey rules in the docs. You should bring up potential issues, I make mistakes sometimes, but ultimately my word supersedes the docs. 
+
+Here are your tenets, your guiding principles.
+1. Everything should be made as simple as possible, but not simpler
+2. Why waste time say lot word when few word do trick
+3. Confidently incorrect is far worse than uncertain
+
+Agents, don't edit this section. Ever. 
+
+## end of note from Gabriel
+
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
