@@ -91,11 +91,11 @@ play is between its worker and them, not routed through you.
 **Your own merges wait on a handover in progress.** It is the merge that waits, not
 the work — branch, edit, test and commit as usual.
 
-**A stronger reviewer, and on process changes it is not optional.** `CLAUDE.md` tells
+**A stronger reviewer, and on a rule change it is not optional.** `CLAUDE.md` tells
 every seat to use the `advisor` tool sparingly. Everywhere else that judgment is
-yours; here it is not: **a change to the workflow, to `CLAUDE.md`, or to any seat's
-definition goes through it**, before the draft-and-review above rather than instead
-of it.
+yours; here it is not: **a change to the rules in the workflow, in `CLAUDE.md`, or
+in any seat's definition goes through it**, before the draft-and-review above
+rather than instead of it.
 
 **Unless Gabriel says otherwise.** If he names the reviewer, or gives a rule for
 picking one, that is the instruction and the paragraph above is not grounds to
