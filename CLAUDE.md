@@ -35,7 +35,7 @@ deploy still happens, but what gets served is no longer decided here.
 
 Every path in the site is relative, so moving the hosting and renaming the repo
 together cost no path inside the site a single edit. What did change was the two
-absolute links out to the repo, in `index.html` and `about.html` — keep the paths
+absolute links out to the repo, in `index.html` and `about/index.html` — keep the paths
 relative and the next move is that small again.
 
 Known gaps and unscheduled work live in `games/<name>/TODO.md` for a game,
@@ -277,7 +277,7 @@ Each game page follows a contract that `shared.css` depends on:
   Standing instructions belong in a collapsible panel, not the status line.
   `shared.css` gives `.status` a reserved min-height so its text can change without
   shifting the board.
-- Links back to `../../index.html`.
+- Links back to `../../`.
 - **Hands the focus back after a pointer click on its own buttons**, in any game
   whose keys drive play. A clicked button keeps the focus, and a focused button
   takes Space and Enter as its own activation — so the key that plays the game

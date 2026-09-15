@@ -160,3 +160,24 @@ narrower than it was: whether categories are a visible idea at all, and whether 
 hub keeps a fixed colour per category — not whether games are obliged to match.
 
 Close this entry by writing the answer into `design/DESIGN.md`, whichever way it goes.
+
+---
+
+# Outside the redesign
+
+### design-about-page-path — `design/DESIGN.md` names the About page at its old path
+
+The `.deco` paragraph says `<div class="deco">` goes first inside `.hub` "on every
+page that shares the hub chrome (`index.html` and `about.html` both)". The About
+page moved to `about/index.html` on `cloudflare-clean-urls`, so the filename is
+wrong; what it claims about `.deco` is unchanged and still true.
+
+Why it moved, since the entry is otherwise a puzzle: Cloudflare serves a page at
+its directory path and 307s the `.html` one there, so the site now links `about/`.
+Leaving the file at the root and linking `about` would have worked live and 404ed
+in both local previews — a directory index is the spelling all three servers
+resolve with nothing configured.
+
+Found from the integrator's seat while landing that branch, and filed rather than
+fixed because `design/` is not that seat's. `tests/docs-check.js` cannot catch it:
+`about.html` has no directory in it, so check 1 reads it as prose.

@@ -82,7 +82,86 @@ async function describe(button) {
   check("the hub itself loads clean", hubErrors.length === 0, hubErrors.join("; "));
   await hub.close();
 
-  let step = 1;
+  // Cloudflare serves a page at its directory path and 307s the `.html`
+  // spelling there, so a link written the long way costs a visitor a round trip
+  // on every navigation. Every internal link in the site was written that way
+  // once; this is what stops the long form arriving back with the next page
+  // somebody adds.
+  //
+  // **What this cannot see.** The server behind these suites resolves a
+  // directory to its `index.html` and never redirects anything, so a `.html`
+  // link would resolve here perfectly happily. The spelling check is a proxy for
+  // "costs no redirect", not a measurement of one — the only real proof is
+  // probing the live site, which is a deploy step rather than a test. What the
+  // resolve check below *does* prove is the half that would have taken the site
+  // down: that the short spelling is not a 404.
+  console.log("2. internal links point at what is served, not at a redirect");
+
+  const pages = [];
+  const walkPages = (dir) => {
+    for (const e of fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true })) {
+      // `.assetsignore` keeps design/ and tests/ out of the deploy, so their
+      // links are nobody's round trip; node_modules and anything hidden are not
+      // the site at all.
+      if (["node_modules", "design", "tests"].includes(e.name) || e.name.startsWith(".")) continue;
+      const rel = dir === "." ? e.name : `${dir}/${e.name}`;
+      if (e.isDirectory()) walkPages(rel);
+      else if (e.name.endsWith(".html")) pages.push(rel);
+    }
+  };
+  walkPages(".");
+
+  // Every page is an index.html in a directory of its own, which is what makes
+  // the clean URL free: a directory index resolves natively and identically in
+  // Workers, in `python3 -m http.server` and in the server these suites run on,
+  // with nothing configured and nothing mirrored. A page at `foo.html` would
+  // need extensionless resolution instead — which Workers does, the other two do
+  // not — so the short link would work live and 404 in every local preview.
+  const loose = pages.filter((p) => !p.endsWith("index.html"));
+  check("every page is a directory index, so its clean URL needs no server config",
+    loose.length === 0,
+    loose.length ? `${loose.join(", ")} would need extensionless resolution` : pages.join(", "));
+
+  const servedAt = (rel) => "/" + rel.replace(/(^|\/)index\.html$/, "$1");
+
+  const longWay = [];
+  const broken = [];
+  for (const rel of pages.filter((p) => p.endsWith("index.html"))) {
+    const at = servedAt(rel);
+    const probe = await browser.newPage();
+    await probe.goto(url(at));
+    // Same-origin, so the page can resolve and fetch its own links itself —
+    // which also means each href is resolved by the browser against the URL the
+    // page was actually served at, rather than by a rule reimplemented here.
+    const links = await probe.$$eval("a[href]", (as) =>
+      as
+        .map((a) => a.getAttribute("href"))
+        // An anchor and an external link are not navigations within the site.
+        .filter((h) => h && !/^(https?:|mailto:|#)/.test(h))
+    );
+    for (const href of links) {
+      if (/\.html(\?|#|$)/.test(href)) longWay.push(`${at} → ${href}`);
+      const status = await probe.evaluate(async (h) => {
+        try {
+          return (await fetch(new URL(h, location.href), { redirect: "follow" })).status;
+        } catch (e) {
+          return String(e);
+        }
+      }, href);
+      if (status !== 200) broken.push(`${at} → ${href} (${status})`);
+    }
+    await probe.close();
+  }
+
+  check("no internal link is written the .html way", longWay.length === 0,
+    longWay.length
+      ? `${longWay.join(", ")} — link the directory ("games/pong/", "../../") so the ` +
+        "navigation does not cost a 307 on the live site"
+      : `${pages.length} pages checked`);
+  check("every internal link resolves", broken.length === 0,
+    broken.join(", ") || `${pages.length} pages checked`);
+
+  let step = 2;
   for (const game of games) {
     console.log(`${++step}. ${game} keeps the page contract`);
     const page = await browser.newPage();
@@ -115,7 +194,7 @@ async function describe(button) {
     const back = await page.$$eval("a[href]", (as) =>
       as.map((a) => a.getAttribute("href"))
     );
-    check(`${game}: links back to the hub`, back.includes("../../index.html"),
+    check(`${game}: links back to the hub`, back.includes("../../"),
       back.join(", "));
 
     // game.css sits *between* shared.css and the game's own sheet, so a game
@@ -147,7 +226,7 @@ async function describe(button) {
     check(`${game}: wears the shared frame`, bare.length === 0,
       bare.length ? `missing: ${bare.join(", ")}` : JSON.stringify(frame));
     check(`${game}: the breadcrumb is the link home`,
-      frame.crumb === "../../index.html", frame.crumb);
+      frame.crumb === "../../", frame.crumb);
     // A canvas game draws at its backing-store resolution. If CSS renders it at
     // any other size the browser resamples every pixel, and on a dark board a
     // resampled 1px line or 10px paddle is smeared across two pixels at half

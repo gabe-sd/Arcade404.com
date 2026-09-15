@@ -103,21 +103,6 @@ entirely in `games/<name>/`, and that is what keeps two agents out of one file; 
 split that leaves `DESIGN.md` and `TODO.md` behind while the three page files move
 would break it for a tidiness the `.assetsignore` line already buys.
 
-### cloudflare-clean-urls — Every navigation costs a redirect
-
-Workers strips `.html` and normalises trailing slashes by 307: `/about.html` to
-`/about`, `/games/pong/index.html` to `/games/pong/`. Every internal link in the
-site is written the long way, so every page-to-page navigation takes an extra
-round trip. Assets are untouched — only HTML is rewritten.
-
-Nothing is broken, and the reason is the rule in `CLAUDE.md`: the redirect lands
-on a URL with the same base directory, so every relative path resolves the same
-either way. That is also why the fix is not free — it is every internal link in
-the site, against one round trip a navigation.
-
-The other direction is a setting. `wrangler.jsonc` has no `html_handling` key, so
-this is whatever the default does; the alternatives have not been tried here.
-
 ## Workflow
 
 How the work is run, rather than what the site does: the seat split, the merge
