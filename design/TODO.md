@@ -175,3 +175,35 @@ narrower than it was: whether categories are a visible idea at all, and whether 
 hub keeps a fixed colour per category — not whether games are obliged to match.
 
 Close this entry by writing the answer into `design/DESIGN.md`, whichever way it goes.
+
+---
+
+# After the redesign
+
+Filed by Gabriel on 2026-09-15. Both are cut from `main`, and both are his ask
+rather than a session's idea — so where one is ambiguous, ask him rather than
+deciding it here.
+
+### hub-arcade404-theme — Redesign the home page to the arcade404 theme
+
+Gabriel's words: "redesign home page to arcade404 theme". The hub was restyled in the
+redesign's first phase and is already on the CRT-phosphor palette, so **this is asking
+for something the first pass did not deliver** rather than for work nobody has done.
+Ask him what is missing before starting — the name `arcade404` doing more work on the
+page, a different composition, or something else he saw and did not like.
+
+### title-links-home — The page title is the link home
+
+Gabriel's words: "title text should be clickable button to go to home page".
+
+**Which title is not settled.** A game page has a breadcrumb, a `.game-title` and a
+footer; the hub has its own title, which has nowhere to link to. The reading that
+makes sense is the `.game-title` on the six game pages.
+
+It lands next to the breadcrumb entry above: if the title links home, the breadcrumb
+`←` is a second link to the same place, and "dropping it may simply be right" stops
+being a wording question and becomes an easy one. Decide the two together.
+
+Keeps the page contract's "links back to `../../`" — `tests/contract.test.js` checks
+the link exists, not which element carries it. Worth re-reading that check before
+moving the link rather than after.
