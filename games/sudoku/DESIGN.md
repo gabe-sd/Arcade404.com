@@ -36,9 +36,23 @@ has only one conflict-free complete grid — no need to compare against
 - Selecting an editable cell, then typing a digit 1-9 (keyboard) or clicking a
   `#number-pad` button, fills it; Backspace/Delete or an eraser button clears
   it. Given cells ignore all of this.
+- **Any cell can be selected, a given included.** A given takes no digit —
+  `placeDigit()` guards that separately — but selecting one lights its scan,
+  which is how you check where a digit is already spoken for. `selectCell()`
+  refused a given outright until the redesign phase.
+- **Selecting a cell marks its peers** with `peer`, which the stylesheet lights
+  as the row, column and box the selection is constrained by. One pass over the
+  board in `renderSelection()`, against a set built once from `peers()`.
 - A filled editable cell whose digit duplicates another cell's digit in the
   same row, column, or 3x3 box is marked wrong, live as it's typed — checks
   that cell's ~20 peers, no board-wide scan.
+- **Both halves of a clash are marked.** `conflicts()` is symmetric, so a
+  duplicate pair is two wrong cells; `placeDigit()` re-renders the peers of the
+  cell it changed as well as the cell itself, or the older half of every pair
+  goes unmarked and a player who clears the red one is left looking at a board
+  that appears clean and is not. Clearing is the same call with digit 0, so it
+  un-marks the survivor by the same path. A given never carries the mark either
+  way.
 - Win: every editable cell is filled and no cell conflicts with any peer.
 - Restart re-copies the current puzzle's `givens` into `grid`. New puzzle picks
   a different entry from `PUZZLES` and does the same. Both go through

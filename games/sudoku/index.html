@@ -41,7 +41,17 @@
             <button class="num-btn" data-digit="7">7</button>
             <button class="num-btn" data-digit="8">8</button>
             <button class="num-btn" data-digit="9">9</button>
-            <button class="num-btn erase" data-digit="0" aria-label="Erase">⌫</button>
+            <!-- Drawn rather than the ⌫ character, which VT323 does not carry:
+                 the browser falls back to the reader's OS font and it arrives
+                 3.5x the width of a digit. Hub icon grid, hub weight. -->
+            <button class="num-btn erase" data-digit="0" aria-label="Erase">
+              <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" fill="none"
+                   stroke="currentColor" stroke-width="2.6"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 10 H41 V38 H18 L6 24 Z"/>
+                <path d="M25 19 L34 29 M34 19 L25 29"/>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -62,7 +72,7 @@
         <h3>Controls</h3>
         <ul>
           <li>Click a cell, then type a digit or use the number pad</li>
-          <li>Backspace, Delete, or ⌫ — clear a cell</li>
+          <li>Backspace, Delete, or the erase key — clear a cell</li>
         </ul>
       </div>
 

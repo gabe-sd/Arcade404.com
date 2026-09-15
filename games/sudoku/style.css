@@ -1,44 +1,98 @@
+/* Three line weights, and the digits are brighter than all of them: hairline
+   between cells, --p-rule for the box lines and the frame, rather than the
+   text colour the cage used to be drawn in.
+
+   Every line is drawn exactly once, by the cell to its right or below it -
+   see ".cell" for why the gutter this board used to have cannot carry them. */
 #board {
   display: grid;
   grid-template-columns: repeat(9, minmax(30px, 42px));
   grid-template-rows: repeat(9, minmax(30px, 42px));
-  gap: 1px;
-  background: var(--cell-border);
-  border: 2px solid var(--fg);
+  gap: 0;
+  background: var(--cell-bg);
+  border: 2px solid var(--p-rule);
 }
 
+/* Left and top only, never right or bottom: a shared edge is then drawn by one
+   cell rather than by both, which is the doubling that borders on all four
+   sides produce. It is also why the ruling is a border here and not the gutter
+   Minesweeper uses - a gutter shows the board's own ground, so a heavier box
+   line has to be drawn *beside* it by a cell, and the two land a pixel apart
+   and notch at every crossing. Drawn this way the box lines mitre into each
+   other instead. */
 .cell {
+  position: relative;
   background: var(--cell-bg);
-  border: none;
+  border: 0;
+  border-left: 1px solid var(--p-hairline);
+  border-top: 1px solid var(--p-hairline);
   font-size: 1.1rem;
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--fg);
+  /* Your digits, in the guest hue the palette assigns them. The puzzle's own
+     are .given below, in the chrome's amber - so which half of the board is
+     yours is carried by hue rather than by two shades of one. */
+  color: var(--p-cyan);
   user-select: none;
+}
+
+/* The frame draws the board's own outer edge, so the first row and column draw
+   nothing of their own - otherwise every corner carries the frame and a
+   hairline a pixel inside it. */
+.cell:nth-child(-n + 9) {
+  border-top: 0;
+}
+
+.cell:nth-child(9n + 1) {
+  border-left: 0;
 }
 
 /* Thicker lines every 3rd row/column mark the 3x3 boxes. nth-child is 1-based,
    so column/row 4 and 7 are where a new box starts. */
 .cell:nth-child(9n + 4),
 .cell:nth-child(9n + 7) {
-  border-left: 2px solid var(--fg);
+  border-left: 2px solid var(--p-rule);
 }
 
 .cell:nth-child(n + 28):nth-child(-n + 36),
 .cell:nth-child(n + 55):nth-child(-n + 63) {
-  border-top: 2px solid var(--fg);
+  border-top: 2px solid var(--p-rule);
 }
 
+/* Clickable like any other cell - selecting one lights its peers - so it keeps
+   the pointer. It just takes no digit. */
 .cell.given {
-  color: var(--muted);
-  cursor: default;
+  color: var(--fg);
 }
 
-.cell.selected {
-  background: color-mix(in srgb, var(--accent) 25%, var(--cell-bg));
+/* The scan: every cell the selected one shares a row, column or box with, so
+   the constraint you are working against is lit rather than counted. Ground
+   only - the ring below is what says which cell is actually selected.
+
+   The wash is kept low so the board's own gap still reads through it: raise it
+   and the ruling inside the cross washes out towards the line colour, which is
+   exactly where you are counting along a row. Giving each lit cell its own
+   inset ring instead was tried and is wrong - two adjacent lit cells then draw
+   a line each side of the gap and the pair reads as a double rule. The cells
+   carry no borders for the same reason. */
+.cell.peer {
+  background: color-mix(in srgb, var(--accent) 6%, var(--cell-bg));
+}
+
+.cell:hover {
+  background: var(--p-panel-lit);
+}
+
+/* An inset ring rather than a border, because the cells carry none and one
+   here would shift the 81-cell grid by a pixel. Chess and Minesweeper both
+   mark a square this way. */
+.cell.selected,
+.cell.selected:hover {
+  background: color-mix(in srgb, var(--accent) 16%, var(--cell-bg));
+  box-shadow: inset 0 0 0 2px var(--accent);
 }
 
 .cell.wrong {
@@ -60,23 +114,31 @@
   gap: 4px;
 }
 
+/* A terminal key, like .btn in shared.css - square, hairline-edged, lit on
+   hover. It was the last rounded thing on the site. */
 .num-btn {
   padding: 0.5rem 0;
   font-size: 1rem;
   font-weight: 600;
-  border: 2px solid var(--cell-border);
-  border-radius: 6px;
-  background: var(--cell-bg);
+  border: 1px solid var(--cell-border);
+  border-radius: 0;
+  background: var(--card-bg);
   color: var(--fg);
   cursor: pointer;
 }
 
 .num-btn:hover {
-  border-color: var(--accent);
+  border-color: var(--p-rule);
+  color: var(--p-pale);
 }
 
-.num-btn.erase {
-  color: var(--muted);
+/* Sized off the digit beside it rather than off the button, so the row reads
+   as ten keys of one weight. */
+.num-btn.erase .ico {
+  width: 1.15rem;
+  height: 1.15rem;
+  display: block;
+  margin: 0 auto;
 }
 
 /* First click of the two-step confirm on Restart / New puzzle - discarding
@@ -84,7 +146,7 @@
 .controls .btn.confirming {
   background: var(--lose);
   border-color: var(--lose);
-  color: white;
+  color: var(--p-ground);
 }
 
 .instructions h3 {
