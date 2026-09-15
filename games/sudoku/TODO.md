@@ -3,6 +3,43 @@
 Known gaps and unscheduled work for this game. Not a changelog — delete
 entries as they land. See the root `TODO.md` for the naming rules.
 
+### sudoku-save-reliability — A player reports their game sometimes does not save
+
+**Reported by a player to Gabriel, 2026-09-15.** Not yet reproduced, and the
+first job is reproducing it rather than fixing anything.
+
+Saving is `saveProgress()` in `games/sudoku/script.js`, called from
+`placeDigit()`, `loadPuzzle()` and `restoreProgress()`; loading is
+`loadProgress()`, called once from `init()`. The stored key is
+`sudoku.progress`, `{ puzzleIndex, grid }` as JSON — see `DESIGN.md`'s "Stored
+data". `tests/sudoku-progress.test.js` covers it today, so whatever is wrong is
+something that suite does not look at.
+
+Two shapes the report could take, and they need telling apart before anything is
+changed:
+
+- **The write never happens.** `saveProgress()` swallows every exception on
+  purpose, so a quota error or blocked site data is indistinguishable from
+  success from inside the game. Nothing in the page reports it.
+- **The write happens and the read throws it away.** `isValidProgress()` returns
+  false — and `loadProgress()` then returns `null`, which `init()` treats as
+  "nothing saved" and starts a fresh puzzle — whenever the saved grid disagrees
+  with `PUZZLES[puzzleIndex].givens`. That check exists so a stale save cannot
+  restore digits into cells the puzzle never gave, and it is right to exist. But
+  it means **any change to the puzzle set silently discards every save in
+  flight**, and to the player that looks exactly like "it did not save". That is
+  the first hypothesis to test, because the set has been edited before.
+
+What to do: characterise before changing anything, per `CLAUDE.md`. Write tests
+for what the save system does now across the messy cases the current suite
+skips — a reload mid-puzzle, a completed puzzle, a puzzle set that changed under
+a save, a `setItem` that throws, a quota that fills, a save written by an older
+version of the page, two tabs open on the same game. Whichever one fails is the
+report.
+
+Ask Gabriel for the player's browser and whether it was a private window before
+guessing — that alone rules out or in the whole first shape.
+
 ### sudoku-conflict-highlight-one-sided — Only the last-typed cell of a clash turns red
 
 `placeDigit()` (`games/sudoku/script.js`) re-renders the cell just typed into and
