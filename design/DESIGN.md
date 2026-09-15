@@ -998,6 +998,69 @@ whatever else is on that page at that size.
 - **The HUD glyphs as words.** Not retried — Flappy Bird's phase built words
   against glyphs on a served page and the glyph row won. This follows it.
 
+## Sudoku: the ruled board
+
+Built 2026-09-15 against the real page. The board was already a grid before the
+phase; what it was not was legible, because the box lines and the frame were drawn
+in `--fg` at 2px. **The cage was brighter than the digits it held.** That is the
+thing to carry forward: on a board whose content is text, the ruling is the frame
+and the text is the picture, and any weight that inverts the two is wrong however
+correct the colour is.
+
+### Three weights, every line drawn once
+
+| Part | Value |
+| --- | --- |
+| Between cells | 1px `--p-hairline` |
+| Between boxes | 2px `--p-rule` |
+| Frame | 2px `--p-rule` |
+| Given digit | `--fg` |
+| Entered digit | `--p-cyan` |
+| Clash | `--lose`, on both halves |
+| Selected cell | inset 2px `--accent` ring on a 16% amber ground |
+| Scan (row, column, box) | 6% amber ground, no line of its own |
+
+**Every cell draws its left and top edge only**, and the board draws the outer
+frame. A shared edge is then drawn by one cell rather than by both, which is the
+doubling that borders on four sides produce.
+
+**Minesweeper's gutter does not work here, and the reason is worth keeping.**
+There the board's own ground shows through a 1px gap and the cells draw nothing —
+clean, because every line on that board is the same weight. Sudoku needs two, and
+a gutter can only carry one: the heavier box line has to be drawn *beside* the gap
+by a cell, so the two land a pixel apart and **every crossing notches**, a short
+doubled line at each of the four box intersections. Gabriel spotted it at a glance.
+**A gutter carries a grid of one weight; borders carry a grid of two.**
+
+### The scan is a wash with no line of its own
+
+Lighting the selected cell's row, column and box is what the board was missing
+rather than a colour question — it is how a player checks where a digit is already
+spoken for. Two things were found building it:
+
+- **The wash has to stay well below the line colour.** Raised until the cross read
+  strongly, the lit ground came up towards `--p-hairline` and the ruling *inside*
+  the cross washed out — which is exactly where a player is counting along a row.
+- **Giving each lit cell its own inset ring to restore that ruling is wrong**, and
+  is how the notch above was found: two adjacent lit cells then draw a line each
+  side of the gap. It is the same doubling in a second costume.
+
+**A given can be selected**, which it could not before: the scan is most useful
+from a digit that is already placed. It still takes no digit.
+
+### Rejected, with the reason
+
+- **Givens dim and entries bright, both amber.** What the board did before. Two
+  shades of one hue is a weak separation for the board's primary distinction, and
+  the palette had already assigned cyan to an entered digit — it had simply never
+  been built.
+- **A rounded number pad.** It was the last rounded thing on the site, from before
+  `.btn` became a terminal key. Squared to match.
+- **The `⌫` character on the erase button.** VT323 does not carry it, so it fell
+  through to the reader's OS font at 3.5x the width of a digit. Drawn instead, on
+  the hub's 48 grid at the hub's weight — the same answer chess, Minesweeper and
+  Flappy Bird reached for their own glyphs.
+
 ## How the tokens are layered
 
 `shared.css` already owns nine token names — `--bg`, `--fg`, `--card-bg`,
