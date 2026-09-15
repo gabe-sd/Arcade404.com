@@ -16,9 +16,13 @@ const PAGE = url("/games/minesweeper/index.html");
 const { check, report } = makeChecks();
 
 // Where the glyphs this replaced lived - the clock and the gear as much as the
-// flag and the bomb. It starts above U+2300 on purpose: the arrows below it are
-// the site's own typography, in this page's breadcrumb and in Flappy Bird's
-// footer, and a sweep that flags those is a sweep nobody will keep.
+// flag and the bomb. The floor is above the arrows and the dashes on purpose:
+// those are the site's own typography, still used in the breadcrumb every game
+// page carries, and a sweep that flags them is a sweep nobody will keep.
+//
+// The arrows are a separate problem with its own entry - design/TODO.md,
+// redesign-emoji-glyphs - because the typeface has no arrow either. When that
+// lands, this floor can come down.
 const SYMBOLS = /[\u{2300}-\u{1FAFF}]/u;
 
 (async () => {
