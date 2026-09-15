@@ -109,9 +109,13 @@ reasoning attached, and is deleted once the build lands.
 | `#ffd694` | pale | |
 | `#fff2da` | white-hot | the beam driven past amber |
 
-Board grounds, which are not the panel: `#100b06` a Sudoku cell, `#16100a` a
-Minesweeper cell, `#2a1c09` a selected cell or lit well, `#0d0905` the Pong
-court. Tile description text is `#d8a45a` — one step under the secondary; an
+Board grounds, which are not the panel: `#100b06` a Sudoku cell, `#2a1c09` a
+selected cell or lit well, `#0d0905` the Pong court. Minesweeper's are its own
+three — `#21170b` a covered cell, `#32220d` one under the pointer, `#1c1408` the
+ruling over cleared ground — and they are local to that game's `style.css` as
+Pong's court is: one board, one use, no token. The covered cell was `#16100a`
+until its phase, which moved it for the reason in "Minesweeper: the covered
+board" below. Tile description text is `#d8a45a` — one step under the secondary; an
 `opacity` there instead greys the amber toward the brown ground.
 
 ### The guest hues — the screen
@@ -913,6 +917,87 @@ outer square of a board drawn as lines there is none, so it stands outside the
 figure as a box in its own right. Where a board has no cells to fill, light it
 with something that has no edge.
 
+## Minesweeper: the covered board
+
+Built 2026-09-15 against the real page. The eight numbers were already decided —
+"The guest hues" above has the mapping and the reasoning, and this phase only
+pointed them at the `--p-*` names. What this phase had to find was everything
+around them.
+
+### The board is two fields, and it takes two devices to say so
+
+**A covered cell is a lid above the page; a cleared one is the page itself.**
+That division is the entire read of the game, and neither ground nor line
+carries it alone at 32px:
+
+- **Ground alone failed.** The lid and the ground were four values apart, which
+  is invisible at cell size. A posed board came back unreadable — every empty
+  cell looked the same whether it had been cleared or not.
+- **Line alone failed too**, in the opposite direction. Erasing the ruling around
+  a cleared cell so cleared ground ran together as one smooth field read
+  perfectly, and cost the cleared area its grid, which is information a player
+  uses.
+
+**So both, and the lid moved to make room.** `#21170b` for the lid, `#32220d`
+under the pointer, `#1c1408` for the ruling left over cleared ground against the
+board's own `--p-hairline` between covered ones. The lid was `#16100a` in the
+board grounds above and this phase moved it; that entry is corrected.
+
+**The grid is the gap.** The board carries the line colour, cells sit on it with
+a 1px gutter, and a cell repaints the line around itself when it is cleared.
+Cells draw no borders of their own: 81 of them double up along every shared edge,
+and a cleared cell cannot then dim its own surround.
+
+### The marks are drawn, and the bomb has no spikes
+
+Chess's precedent, for the reason chess had: VT323 has no such glyph, so an emoji
+falls through to the reader's OS font and is the one thing on the page the
+palette cannot reach. Same 48 grid, same weight, `data-mark` naming what the
+drawing is.
+
+**The hub's own mine icon does not survive the trip down.** It draws eight
+radial spikes and reads as a mine at 46px; at cell size they close up into a
+sunburst. What says "bomb" at 24px is **a body and a lit fuse**, and no spikes at
+all. The flag went solid for the same kind of reason — outlined, its swallowtail
+closed into a small box.
+
+**A flag that turned out to be wrong goes dim and gets a strike**, rather than
+taking a colour of its own. Coral is the flag's whether the call was right or
+not, so the difference is light — the board already spends its one hue on
+danger, and a third state would have needed a hue nothing else here uses.
+
+**Coral for both the flag and the mines**, which is the palette's assignment for
+the flag and worth extending: a flag is a claim that a mine is there, so the two
+agreeing is the point. The mines are held back off full coral so that **the one
+you actually hit is the brightest thing on a dead board** — white-hot glyph, a
+coral wash and a coral ring. That is this site's standing rule again, from the
+side Tic Tac Toe found it: where a resting colour *is* a state colour, the state
+is carried by something that is not the hue.
+
+### The gear became sliders, and why a `?` would not do
+
+`design/TODO.md` proposed following the frame, which labels How to play with a
+plain `?`. That is taken on this page — How to play is a word here, and the gear
+is a second control beside it.
+
+A gear was drawn first and thrown out: **at button size a gear is a ring with
+short radial teeth, which is the same drawing as the mine on the board above
+it.** One glyph, two meanings, on one page. Sliders collide with nothing.
+
+**The general form, which is worth having:** a glyph that reads at icon size can
+stop reading at a third of it, and two glyphs that are distinct at icon size can
+converge there. Check a drawing at the size it will actually be used, against
+whatever else is on that page at that size.
+
+### Rejected, with the reason
+
+- **Cleared cells with no grid at all.** Built, and it reads better as a
+  *picture* — cleared ground as one smooth field is the classic minesweeper
+  look. Gabriel asked for the lines back and he is right: the ruling is how you
+  count squares along a row, which is most of what the game asks you to do.
+- **The HUD glyphs as words.** Not retried — Flappy Bird's phase built words
+  against glyphs on a served page and the glyph row won. This follows it.
+
 ## How the tokens are layered
 
 `shared.css` already owns nine token names — `--bg`, `--fg`, `--card-bg`,
@@ -1062,8 +1147,8 @@ rather than another colour — an underline, an inverted cell, a border; five
 independent attempts converged on that. With six guest hues plus the home hue
 plus one neutral, Amber Arcade's eight numbers need no mark at all, and the two
 rarest digits stop costing the player a decode. That is the clearest single thing
-the colour buys, and it is what makes `redesign-minesweeper` a recolour rather
-than a hue-plus-marks problem.
+the colour buys, and it is what made Minesweeper's eight a recolour rather than
+a hue-plus-marks problem — see "Minesweeper: the covered board" above.
 
 Measured rather than eyeballed, because at *as mocked* the texture is too subtle
 to judge from a screenshot: a scanline makes a column of pixels oscillate row to

@@ -44,23 +44,12 @@ each of the four remaining games still needs its visual pass. The overhaul lande
 `main` on 2026-09-07 with the hub, the shell, chess and Pong redesigned and the other
 four framed but not restyled inside.
 
-**Flappy Bird's phase landed on 2026-09-10 and Tic Tac Toe's on 2026-09-11**,
-leaving the two below.
+**Flappy Bird's phase landed on 2026-09-10, Tic Tac Toe's on 2026-09-11 and
+Minesweeper's on 2026-09-15**, leaving Sudoku below.
 
-**For both: the frame has landed** — breadcrumb, title, strap, scanlines, footer
-and the shared `#instructions` panel are in place and covered by
-`tests/contract.test.js`. What is left in each is the inside of the board.
-
-### redesign-minesweeper — Minesweeper
-
-Mostly `style.css`. The one real piece of work is `.n1` through `.n8`, eight hardcoded
-number colours that are the only place in the site with a palette of their own.
-
-All eight were forced onto a real board and read: they are legible on the phosphor
-ground, and the only thing wrong with them is that they are the *old* palette. So this
-is a recolour, not a legibility rescue. What makes it non-trivial is keeping the eight
-apart from **each other** on a near-black ground, without any of them reading as the
-amber the rest of the site uses for ordinary text.
+**The frame has landed** — breadcrumb, title, strap, scanlines, footer and the
+shared `#instructions` panel are in place and covered by
+`tests/contract.test.js`. What is left is the inside of the board.
 
 ### redesign-sudoku — Sudoku
 
@@ -71,38 +60,56 @@ assuming they carry over.
 ### redesign-emoji-glyphs — The emoji, which are the last off-palette thing
 
 Colour emoji are rendered by the OS font, not by ours, so they ignore the palette
-entirely and are the most visible remaining break in the look. Counted on `main` at
-946f476 by sweeping every served page and script for non-ASCII, which is the only
-method that finds a glyph living in a string that has not fired yet:
+entirely and are the most visible remaining break in the look. **Minesweeper's phase
+took its whole share on 2026-09-15**, and what is left is this:
 
 | Game | Where | Glyphs |
 | --- | --- | --- |
-| minesweeper | HUD, board, settings button, win message | `🚩` `⏱` `🏆`, `💣` `🚩` as cell content, `⚙` on the settings button, `🎉` ×3 |
 | pong | status line and the menu | `🎉` ×2 |
 | sudoku | status line | `🎉` |
 
-Flappy Bird's `🐦` and `🏆` are gone — `redesign-flappy-bird` took its own share.
+Flappy Bird's, Tic Tac Toe's and Minesweeper's are all gone, each taken by that
+game's own phase. Chess and the hub never had any.
 
-Chess, Tic Tac Toe and the hub have none.
+**The three `🎉` that remain are a tone choice in a win message, not a palette
+problem**, and they sit in `#status` text. Minesweeper's phase asked and Gabriel
+handed the call over; its three were dropped, and the message needed no rewording to
+lose them. That is a precedent for the other three rather than a decision about them
+— **the words on a page are Gabriel's**, so ask before touching a sentence rather
+than a character.
 
-Four problems wearing one costume, and they do not have one answer:
+**Pong is the one to notice.** It went through a full redesign phase and kept two of
+them, which is why this is one entry rather than a line in each game's.
 
-- **The HUD glyphs** are labels — flags left, time, best. VT323 has no icons, so
-  replacing them means a word, an abbreviation or a drawn glyph.
-- **`⚙` is a control's icon**, which is neither of the above. The frame already does
-  this job without an emoji: Pong and Flappy Bird label How to play with a plain `?`.
-- **Minesweeper's `💣` and `🚩` are the game's content**, not decoration. They are what
-  a cell *is*. Chess solved the same problem by drawing its pieces rather than typing
-  them — `games/chess/DESIGN.md` is the precedent worth reading first.
-- **The six `🎉`** are a tone choice in a win message, not a palette problem. Whether
-  the site wants to sound like that is Gabriel's call, and they are in `#status` text.
+### What the finished phases settled
 
-**All four were checked, and none of them are fine.** VT323 is monospace, so every
-glyph it actually has measures the same width. Measured on a served page at 22px on
-2026-09-10: `M`, `W` and `i` are 8.8px each; `↑` and `↓` are 11px, `▶` is 16.92px
-and `⌫` is 31.11px. Four different widths means four different faces — the browser
-is falling back for every one of them, and at 4x the arrow's strokes are visibly
-thinner than the letters either side of it.
+Nothing here is open any more; it is recorded so a later session does not re-decide it.
+
+- **A HUD readout** is a drawn stroke glyph on a 48 grid at the hub's icon weight,
+  `aria-hidden`, plus the word it stands for as off-screen text, plus the number.
+  Flappy Bird's phase built words against glyphs on a served page and the glyph row
+  won; Minesweeper's followed it.
+- **A game's content** — Minesweeper's mine and flag — is drawn SVG on the same grid,
+  carrying `data-mark` so a test can name it. Chess's pieces are the precedent.
+  A drawing that reads at icon size may not read at a third of it: the hub's spiked
+  mine became a sunburst in a cell, and the fix was a body and a fuse.
+- **A control's icon** is drawn too, and is checked against whatever else is on the
+  page at that size. A gear and a mine are the same ring-with-teeth at button size,
+  which is why Minesweeper's advanced button is sliders.
+
+### The arrows and the other substituted glyphs
+
+**Flappy Bird's are done** — its panel and footer now say "Up arrow" in words,
+Gabriel's call on 2026-09-15. **Pong and Sudoku still have theirs, and they are the
+harder two:** Pong says `W/S or ↑/↓` twice, which has no short rewrite, and Sudoku
+uses `⌫` both as a button's label and in its panel, where a word has to fit a button.
+Neither was noticed when this entry was written.
+
+VT323 has no arrows: it is monospace, so every glyph it really has measures the same
+width, and measured on a served page at 22px on 2026-09-10, `M`, `W` and `i` are
+8.8px each while `↑` and `↓` are 11px, `▶` is 16.92px and `⌫` is 31.11px. Four widths
+means four faces — the browser is falling back for every one. `▶` is on Pong's Play
+button and is the same problem in a third shape.
 
 **`shared.css` says otherwise and is not lying.** Its `@font-face` `unicode-range`
 lists U+2191 and U+2193, which is Google's subsetting metadata for the file rather
@@ -110,29 +117,12 @@ than a promise the glyph is in it. The range decides whether the font is consult
 if the glyph is missing the browser falls back anyway. Do not take that line as
 evidence a character is covered — measure it.
 
-The fix is a wording change — "Space, ↑ or W" becoming words — and **the words on
-that panel are Gabriel's**, so this needs asking rather than deciding. It stays
-here rather than being folded into a game's phase for that reason.
+The fix is a wording change, and those words are Gabriel's — which is the whole of why
+this entry outlives the game phases. Ask him for the wording rather than picking one.
 
-**Pong is the one to notice.** It went through a full redesign phase and kept two
-`🎉`, which says a game's own phase will not necessarily catch these. Hence one entry
-across all four rather than a line in each.
-
-**`🏆` was the one exception to "each takes its own share" below, and the
-convention is now set.** It was in both Flappy Bird's and Minesweeper's HUD, so
-the two phases needed one answer. Flappy Bird's phase decided it: **a HUD readout
-is a drawn stroke glyph on a 48 grid at the hub's icon weight, `aria-hidden`, plus
-the word it stands for as off-screen text, plus the number.** Not a word on its
-own — words were built and set against glyphs on a served page, and the glyph row
-won. Minesweeper's phase follows that for `🚩` `⏱` `🏆`; its `💣` and `🚩` as cell
-*content* are a different problem and chess is still the precedent there.
-
-**If the list is edited, sweep for non-ASCII across pages *and* scripts** rather than
+**If the table is edited, sweep for non-ASCII across pages *and* scripts** rather than
 grepping for the glyphs already known about. It was counted the narrow way once and
 came out three kinds short: a screenshot cannot show a win message that has not fired.
-
-The four game phases run, so each takes its own game's share and this shrinks to
-whatever is left over.
 
 ### redesign-category-accents — Decide whether colour by category stays
 

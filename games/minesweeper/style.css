@@ -1,9 +1,133 @@
+/* This board's four local values. They are this game's alone - one board, one
+   use, no token - which is how Pong's court is kept too; design/DESIGN.md's
+   board grounds lists them.
+ *
+ * The whole read of the board is covered field against cleared field, and it
+ * takes both ground and line to carry it: either one alone vanishes at cell
+ * size, which is the mistake this arrangement replaced. A covered cell is a
+ * lid sitting above the page and a cleared one is the page itself, and the
+ * ruling between covered cells is brighter than the ruling left over cleared
+ * ground. --lit is the lid under the pointer, and has to stay clear of --lid
+ * for the same reason the two fields do. */
+:root {
+  --lid: #21170b;
+  --lit: #32220d;
+  --cleared-line: #1c1408;
+}
+
+/* ---------- the board ---------- */
+
+/* The grid is the gap. The board carries the line colour and the cells sit on
+   it with a 1px gutter, so the rules between cells are drawn once by the
+   container rather than 81 times by borders that double up along every shared
+   edge. It also means a revealed cell can go fully dark without the board
+   losing its structure - which is what happened when each cell drew its own. */
 #board {
   display: grid;
   grid-template-columns: repeat(9, 32px);
   grid-template-rows: repeat(9, 32px);
-  gap: 2px;
+  gap: 1px;
+  padding: 1px;
+  background: var(--p-hairline);
 }
+
+.cell {
+  background: var(--lid);
+  border: 0;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--p-soft);
+  user-select: none;
+  padding: 0;
+}
+
+.cell:hover:not(.revealed) {
+  background: var(--lit);
+}
+
+/* A revealed cell repaints the grid line around itself in the dimmer value,
+   rather than erasing it: cleared ground stays ruled, and it is the whole
+   field that dims rather than the lines that go. */
+.cell.revealed {
+  background: var(--bg);
+  box-shadow: 0 0 0 1px var(--cleared-line);
+  cursor: default;
+}
+
+/* The eight numbers. Eight hues and no second device - no underline, no weight
+   change - which is what eight distinct hues buys. 1-3 take the three most
+   separated because they are what gets read at speed; 7 and 8 are almost never
+   seen. See design/DESIGN.md, "The guest hues".
+
+   The pair to watch is n6 against n1, 34 degrees apart and separated on
+   lightness alone. If it ever fails on a larger board, n6 is the one to move. */
+.n1 { color: var(--p-amber); }
+.n2 { color: var(--p-cyan); }
+.n3 { color: var(--p-coral); }
+.n4 { color: var(--p-jade); }
+.n5 { color: var(--p-rose); }
+.n6 { color: var(--p-lime); }
+.n7 { color: var(--p-violet); }
+.n8 { color: var(--p-hot); }
+
+/* ---------- what a cell can be ---------- */
+
+/* The flag and the mine are drawn rather than typed, as chess's pieces are and
+   for the same reason: VT323 has no such glyph, so an emoji falls through to
+   whatever face the OS serves and ignores the palette entirely. Same 48 grid,
+   same hand. See design/DESIGN.md, "Minesweeper: the covered board". */
+.mark {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+/* Coral is the flag's, per the palette. It is also --lose, which a tripped mine
+   would otherwise take - so the mine says its state in light instead of in hue,
+   below. */
+.cell.flagged .mark {
+  color: var(--p-coral);
+}
+
+/* A flag that turned out to be wrong, once the game is over. It goes out rather
+   than changing hue: the strike says it was wrong and the dimming says it is
+   spent, and both are readable beside the coral flags that were right without
+   needing a colour nobody else on this board uses. */
+.cell.flagged.wrong .mark {
+  color: var(--p-dim);
+}
+
+/* Every mine on the board once it is over: shown, not shouted. */
+.cell.mine {
+  background: var(--bg);
+}
+
+/* Coral, the same hue the flag wears - a flag is a claim that a mine is there,
+   so the two agreeing is the point. Held back off full coral so the one you
+   actually hit is the brightest thing on a dead board. */
+.cell.mine .mark {
+  color: color-mix(in srgb, var(--p-coral) 55%, var(--bg));
+}
+
+/* The one you actually hit. Coral ground, white-hot glyph: the hue is the same
+   coral the flag wears, and what separates them is the light. */
+/* An inset ring rather than a border: the cells have none, because the board
+   draws the grid between them, and adding one back here would push this cell's
+   content a pixel out of line with every other. */
+.cell.mine.tripped {
+  background: color-mix(in srgb, var(--p-coral) 26%, var(--bg));
+  box-shadow: inset 0 0 0 1px var(--p-coral), 0 0 0 1px var(--cleared-line);
+}
+
+.cell.mine.tripped .mark {
+  color: var(--p-hot);
+  filter: drop-shadow(0 0 6px var(--p-coral));
+}
+
+/* ---------- the advanced panel ---------- */
 
 /* :not([hidden]) because a display of any kind would otherwise beat the hidden
    attribute the toggle uses. */
@@ -22,46 +146,51 @@
 .settings .btn.confirming {
   background: var(--lose);
   border-color: var(--lose);
-  color: white;
+  color: var(--p-ground);
 }
 
-.cell {
-  background: var(--cell-bg);
-  border: 2px solid var(--cell-border);
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 700;
+/* ---------- the readout ---------- */
+
+/* Flappy Bird's convention, unchanged: a drawn stroke glyph, the word it stands
+   for kept off-screen for a reader, then the number. */
+.hud .gly svg {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* The word each glyph stands for, kept for a screen reader and taken out of the
+   picture. Not `display: none`, which would take it out of the reading too. */
+.hud .lbl {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.hud span {
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--fg);
-  user-select: none;
+  gap: 0.4rem;
 }
 
-.cell:hover:not(.revealed) {
-  border-color: var(--accent);
+.hud .n {
+  font-variant-numeric: tabular-nums;
+  color: var(--p-amber);
 }
 
-.cell.revealed {
-  background: transparent;
-  border-color: var(--cell-border);
-  cursor: default;
+/* The two stored or standing readouts do not glow; the live one does. Same
+   distinction Flappy Bird's pair makes. */
+#best-time .n,
+#flag-count .n {
+  color: var(--p-dim);
 }
 
-.cell.mine {
-  background: var(--lose);
+/* The settings button's glyph, at the weight the HUD's are. */
+.btn.icon svg {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
 }
-
-.cell.flagged {
-  background: var(--cell-bg);
-}
-
-.n1 { color: #3b82f6; }
-.n2 { color: #22c55e; }
-.n3 { color: #ef4444; }
-.n4 { color: #8b5cf6; }
-.n5 { color: #f59e0b; }
-.n6 { color: #06b6d4; }
-.n7 { color: #ec4899; }
-.n8 { color: #6b7280; }
