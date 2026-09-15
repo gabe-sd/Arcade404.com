@@ -174,3 +174,46 @@ narrower than it was: whether categories are a visible idea at all, and whether 
 hub keeps a fixed colour per category — not whether games are obliged to match.
 
 Close this entry by writing the answer into `design/DESIGN.md`, whichever way it goes.
+
+---
+
+# After the redesign
+
+Filed by Gabriel on 2026-09-15, cut from `main`.
+
+### hub-arcade404-theme — The site's name, and the home page around it
+
+Two asks of his, filed as two entries and merged into one on his instruction the same
+day, because **they are the same element**. The wordmark reads `ARCADE`, a placeholder
+from before the site had a domain: "since the redesign the site was moved to a real
+custom domain and now has a proper name. arcade is a placeholder." It is `.brand` on
+the hub and About, and the `ARCADE` in every game page's breadcrumb — that is what
+"the main title on every page" means. Renaming it and making it the way home touch the
+same markup on the same eight pages, so they go together.
+
+**The name.** His words: "i want it to say arcade 404 // error game not found or
+something like that. at the very least it should say the sites name. arcade404 (not
+sure about casing and spacing)." So the name is settled and its typesetting is not —
+`ARCADE 404 // ERROR GAME NOT FOUND` is his example rather than his specification, and
+casing, spacing and whether the tail rides along are all open. **Build the candidates
+on a served page and let him pick**, which is how every look decision here has been
+taken.
+
+**The link.** His words: "title text should be clickable button to go to home page."
+On a game page the breadcrumb is already the link home, so this is about what carries
+the link rather than adding one; on the hub and About the `.brand` has somewhere to
+point for the first time. It keeps the page contract's "links back to `../../`" —
+`tests/contract.test.js` checks the link exists, not which element carries it. Read
+that check before moving the link rather than after.
+
+**The hub around it.** The first phase put the hub on the CRT-phosphor palette and
+that stays; what it never had was a name to build a page around. The 404 joke is a
+composition the hub can lean into, not only a string in a header.
+
+**Two stale strings go with it**, statements of fact rather than prose: the hub's
+`<title>` is `Arcade` and About's is `About — Gabe-SD Arcade`, naming a repo that has
+moved. Every game page's is `<Game> · Game Arcade`.
+
+**Take this before the emoji entry.** Its hardest open item is the breadcrumb `←`, and
+if the wordmark carries the link home, dropping the `←` stops being a wording question
+and may simply be right.
