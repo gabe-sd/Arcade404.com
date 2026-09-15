@@ -30,10 +30,36 @@
         <!-- The hud is the board's own readout, so it is inside the stack and
              as wide as the board rather than as wide as the page. -->
         <div class="board-stack">
+          <!-- Three readouts on Flappy Bird's convention: a drawn stroke glyph
+               on the hub's 48 grid, the word it stands for kept off-screen for
+               a reader, then the number. The emoji these replace were rendered
+               by the OS font and ignored the palette entirely. -->
           <div class="hud">
-            <span id="flag-count" title="Flags left to place">🚩 10</span>
-            <span id="timer">⏱ 0</span>
-            <span id="best-time" title="Your best time on this device">🏆 —</span>
+            <span id="flag-count" title="Flags left to place">
+              <span class="gly" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor"
+                  stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+                  <path d="M15 42V7"/>
+                  <path d="M17 9h20l-6 8 6 8H17z" fill="currentColor" stroke="none"/></svg>
+              </span><span class="lbl">flags left</span><span class="n">10</span>
+            </span>
+            <span id="timer">
+              <span class="gly" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor"
+                  stroke-width="2.6" stroke-linecap="round">
+                  <circle cx="24" cy="26" r="15"/><path d="M24 17v9h7"/>
+                  <path d="M19 6h10"/><path d="M24 6v5"/></svg>
+              </span><span class="lbl">time</span><span class="n">0</span>
+            </span>
+            <span id="best-time" title="Your best time on this device">
+              <span class="gly" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor"
+                  stroke-width="2.6" stroke-linecap="round">
+                  <path d="M16 11h16v8a8 8 0 0 1-16 0z"/>
+                  <path d="M16 13h-4v3a5 5 0 0 0 5 5M32 13h4v3a5 5 0 0 1-5 5"/>
+                  <path d="M24 27v6M18 37h12"/></svg>
+              </span><span class="lbl">best</span><span class="n">—</span>
+            </span>
           </div>
           <div id="board" role="grid" aria-label="Minesweeper board"></div>
         </div>
@@ -45,7 +71,15 @@
                 aria-expanded="false" aria-controls="instructions">How to play</button>
         <button id="settings-toggle" class="btn secondary icon" title="Advanced"
                 aria-expanded="false" aria-controls="settings"
-                aria-label="Advanced controls">⚙</button>
+                aria-label="Advanced controls"><!--
+          Sliders rather than a gear. A gear at this size is a ring with short
+          radial teeth, which is the same drawing as the mine on the board two
+          inches above it - one glyph, two meanings, on one page.
+       --><svg viewBox="0 0 48 48" fill="none" stroke="currentColor"
+          stroke-width="3.4" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 14h36M6 34h36"/>
+          <circle cx="18" cy="14" r="5" fill="var(--bg)"/>
+          <circle cx="32" cy="34" r="5" fill="var(--bg)"/></svg></button>
       </div>
 
       <div id="instructions" class="instructions" hidden>
@@ -54,6 +88,7 @@
           <li><b>Right click</b> — place or remove a flag</li>
           <li><b>Middle click</b> — chord (see below)</li>
         </ul>
+        <p>first click is always safe</p>
         <p>
           Chording opens all remaining neighbours of a revealed number in one go,
           once you have flagged exactly that many cells around it. If one of those
@@ -66,7 +101,6 @@
 
       <div class="game-foot">
         <span>left click reveals · right click flags · middle click chords</span>
-        <span>first click is always safe</span>
       </div>
     </div>
   </main>

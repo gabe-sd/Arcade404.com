@@ -7,6 +7,40 @@ Chording fires on middle **mousedown** (see below). The HUD counter shows flags
 left to place (`MINE_COUNT - flagCount`), which is why it carries a flag icon;
 the bomb icon means an actual revealed mine.
 
+## What a cell draws
+
+The flag and the mine are SVG written by `markSVG`, not characters — see
+`design/DESIGN.md`, "Minesweeper: the covered board", for why, and for the rest
+of the look. Each carries `data-mark` naming what it is — `flag`, `flag-wrong` or `mine` —
+which is how
+`tests/minesweeper-marks.test.js` tells them apart without comparing serialised
+path markup.
+
+`cell.tripped` marks the single mine that ended the game, set in both places one
+can be hit — `handleReveal` and `handleChord`. It is drawn differently from the
+mines revealed beside it, and nothing else reads it.
+
+**A correct flag survives the reveal, and its cell stays covered.**
+`revealAllMines` reveals every mine when the game ends, and `renderCell` used to
+drop the flag from a revealed cell — so a mine you had called correctly showed
+the bomb underneath instead, deleting the only record that you had called it.
+Gabriel's decision, 2026-09-15. `renderCell` now lets `cell.flagged` win over
+`cell.revealed` for both the class and the mark; the state itself is untouched,
+so nothing that counts revealed cells changes.
+
+**A flag that was wrong is struck out.** `revealAllMines` sets `cell.wrong` on
+any flag sitting on a safe cell, and `renderCell` draws `flag-wrong` for it —
+the same flag with a line through it, dimmed. Marked there rather than read off
+`gameOver` inside `renderCell`, because both callers set `gameOver` *after*
+calling `revealAllMines`, so reading it would have drawn nothing.
+
+Two details worth keeping. The strike is on the **flag**, not on a mine: the
+classic game draws a crossed-out mine, which puts a bomb on a cell that never
+had one, and what was wrong is the call rather than the contents. And the wrong
+flag **goes dim rather than changing hue** — coral is the flag's colour whether
+the flag was right or not, so the difference is carried by light, as everywhere
+else on this site.
+
 ## Page ids
 
 On top of the shared `#board`, `#status` and `#restart` from `CLAUDE.md`'s page
