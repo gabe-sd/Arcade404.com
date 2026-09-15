@@ -394,7 +394,7 @@ ceiling; Gabriel's eye overrides it per `ART-DIRECTOR.md`. If a later round want
 to push this further, keep checking it against real content (the tiles, the
 wordmark) rather than the wash in isolation. `<div class="deco">` goes first
 inside `.hub`, before `.crt`, on every page that shares the hub chrome
-(`index.html` and `about.html` both).
+(`index.html` and `about/index.html` both).
 
 ### Chrome, as built
 
