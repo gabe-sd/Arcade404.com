@@ -61,17 +61,38 @@ assuming they carry over.
 
 Colour emoji are rendered by the OS font, not by ours, so they ignore the palette
 entirely and are the most visible remaining break in the look. **Minesweeper's phase
-took its whole share on 2026-09-15**, and what is left is this:
+took its whole share on 2026-09-15**, and this is everything left:
+
+Re-swept on 2026-09-15 across every served `.html`, `.js` and `.css` outside
+`tests/` and `design/`, by codepoint rather than by grepping for glyphs already
+known about:
 
 | Game | Where | Glyphs |
 | --- | --- | --- |
+| **every game** | the breadcrumb | `←` ×6, one per game page |
 | pong | status line and the menu | `🎉` ×2 |
+| pong | Play button, panel, footer | `▶`, `↑`/`↓` ×2 |
 | sudoku | status line | `🎉` |
+| sudoku | erase button, panel | `⌫` ×2 |
 
-Flappy Bird's, Tic Tac Toe's and Minesweeper's are all gone, each taken by that
-game's own phase. Chess and the hub never had any.
+Flappy Bird's, Tic Tac Toe's and Minesweeper's emoji are all gone, each taken by
+that game's own phase. The hub and the About page have none.
 
-**The three `🎉` that remain are a tone choice in a win message, not a palette
+**The breadcrumb `←` is the one to notice**, and it had never been counted: it is
+on six pages rather than one, it is the most-seen glyph in the set, and it is the
+*frame's* rather than any game's — so unlike everything else here it cannot be
+taken by a game's phase. It is a substituted face like the rest; `M`, `W` and `i`
+measure 8.8px in VT323 and `↑` measures 11px, and `←` is from the same block the
+typeface does not carry.
+
+**Two kinds of problem, and the table does not separate them.** The `🎉` are a tone
+choice; everything else is a glyph the typeface does not have — "The arrows and the
+other substituted glyphs" below is that half, and it needs wording from Gabriel.
+Read both before closing this entry: an earlier version of this table listed the
+`🎉` alone under "what is left", which would have let a later session close it with
+eleven substituted glyphs still on the site.
+
+**The three `🎉` are a tone choice in a win message, not a palette
 problem**, and they sit in `#status` text. Minesweeper's phase asked and Gabriel
 handed the call over; its three were dropped, and the message needed no rewording to
 lose them. That is a precedent for the other three rather than a decision about them
@@ -100,10 +121,14 @@ Nothing here is open any more; it is recorded so a later session does not re-dec
 ### The arrows and the other substituted glyphs
 
 **Flappy Bird's are done** — its panel and footer now say "Up arrow" in words,
-Gabriel's call on 2026-09-15. **Pong and Sudoku still have theirs, and they are the
-harder two:** Pong says `W/S or ↑/↓` twice, which has no short rewrite, and Sudoku
-uses `⌫` both as a button's label and in its panel, where a word has to fit a button.
-Neither was noticed when this entry was written.
+Gabriel's call on 2026-09-15. Three sets are left, in rising order of difficulty:
+
+- **Pong** says `W/S or ↑/↓` twice, which has no short rewrite, plus `▶` on Play.
+- **Sudoku** uses `⌫` in its panel and as an erase button's whole label, where a
+  word has to fit a button.
+- **The breadcrumb `←`**, on all six game pages. Hardest of the three despite being
+  one character: it is the frame's, it is decoration rather than an instruction, and
+  dropping it may simply be right where the other two need words.
 
 VT323 has no arrows: it is monospace, so every glyph it really has measures the same
 width, and measured on a served page at 22px on 2026-09-10, `M`, `W` and `i` are
