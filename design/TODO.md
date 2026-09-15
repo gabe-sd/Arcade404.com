@@ -181,29 +181,46 @@ Close this entry by writing the answer into `design/DESIGN.md`, whichever way it
 # After the redesign
 
 Filed by Gabriel on 2026-09-15. Both are cut from `main`, and both are his ask
-rather than a session's idea — so where one is ambiguous, ask him rather than
-deciding it here.
+rather than a session's idea.
 
-### hub-arcade404-theme — Redesign the home page to the arcade404 theme
+**Both are about the same element.** The wordmark reads `ARCADE`, and that is a
+placeholder from before the site had a domain — Gabriel's words, 2026-09-15: "since
+the redesign the site was moved to a real custom domain and now has a proper name.
+arcade is a placeholder." It is `.brand` on the hub and About, and the `ARCADE` in
+every game page's breadcrumb, which is what "the main title on every page" means.
+The two entries are what he wants done to it: give it the real name, and make it the
+way home.
 
-Gabriel's words: "redesign home page to arcade404 theme". The hub was restyled in the
-redesign's first phase and is already on the CRT-phosphor palette, so **this is asking
-for something the first pass did not deliver** rather than for work nobody has done.
-Ask him what is missing before starting — the name `arcade404` doing more work on the
-page, a different composition, or something else he saw and did not like.
+### hub-arcade404-theme — The site's name, and the home page around it
 
-### title-links-home — The page title is the link home
+Gabriel's words: "i want it to say arcade 404 // error game not found or something
+like that. at the very least it should say the sites name. arcade404 (not sure about
+casing and spacing)."
 
-Gabriel's words: "title text should be clickable button to go to home page".
+So the name is settled and its typesetting is not. `ARCADE 404 // ERROR GAME NOT
+FOUND` is his example rather than his specification — "or something like that" — and
+casing and spacing are explicitly open. **Build the candidates on a served page and
+let him pick**, which is how every other look decision here has been taken.
 
-**Which title is not settled.** A game page has a breadcrumb, a `.game-title` and a
-footer; the hub has its own title, which has nowhere to link to. The reading that
-makes sense is the `.game-title` on the six game pages.
+The rest of the entry is the hub around it. The first phase put the hub on the
+CRT-phosphor palette and it stays; what it never had was a name to build a page
+around. The 404 joke is a composition the hub can lean into, not only a string in
+the header.
 
-It lands next to the breadcrumb entry above: if the title links home, the breadcrumb
-`←` is a second link to the same place, and "dropping it may simply be right" stops
-being a wording question and becomes an easy one. Decide the two together.
+**Two stale strings go with it**, and they are statements of fact rather than prose:
+the hub's `<title>` is `Arcade`, and About's is `About — Gabe-SD Arcade`, naming a
+repo that has moved. Every game page's is `<Game> · Game Arcade`.
+
+### title-links-home — The wordmark is the link home
+
+Gabriel's words: "title text should be clickable button to go to home page". The
+wordmark, per above — so on a game page the `ARCADE` in the breadcrumb, and on the
+hub and About the `.brand`, which has somewhere to point for the first time.
+
+It lands next to the breadcrumb entry in the redesign section: the crumb is already
+the link home, so this is about what the link *is* rather than adding one. If the
+wordmark carries it, "dropping the `←`" stops being a wording question.
 
 Keeps the page contract's "links back to `../../`" — `tests/contract.test.js` checks
-the link exists, not which element carries it. Worth re-reading that check before
-moving the link rather than after.
+the link exists, not which element carries it. Read that check before moving the
+link rather than after.
