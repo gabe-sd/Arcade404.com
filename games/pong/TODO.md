@@ -26,6 +26,45 @@ here rather than batched.
 
 Entries with no gate need nothing from him and can run back to back.
 
+### pong-charge-hitbox-tell — Color the paddle tips to show the Clutch hitbox
+
+**Top of the list as of 2026-09-15: Gabriel raised it as highly requested by
+players, who want to see where the charge band is.** The gate below still
+stands — he looks at the colours before they ship.
+
+**Gate: Gabriel looks at the colours before they ship.** Not a full playtest —
+this does not change how the game plays, only what it shows — but it is a new
+colour on the player's own paddle, which is worth a look before it lands.
+
+`ABILITY.clutch` already defines a band at each end of the player's paddle that
+counts as a close call toward filling the meter (`games/pong/script.js`, near the
+`clutch` config), and today it is completely invisible — the player has no way to
+know it exists, let alone aim for it. Tint the top and bottom band of the
+player's paddle to mark it.
+
+- **It must track the band's actual definition, not the paddle's drawn size.**
+  The comment on that constant is explicit about why: the band is a fraction of
+  the paddle's *base* size, not its current height, specifically so an active
+  Expand or Squeeze does not silently change where a close call registers. A tip
+  drawn as a fraction of the live `h` would disagree with where `onPlayerReturn()`
+  actually counts a close call whenever Expand or Squeeze is active — which is
+  the exact failure this entry exists to avoid. A hitbox indicator that lies is
+  worse than no indicator.
+- Read the same base-size fraction the close-call check itself uses; do not
+  recompute an independent one. `syncPaddleSize()` is still the only thing that
+  writes a paddle's live height, and this entry should not need to touch it.
+- Pick a colour that is not already claimed, and there is less room than there
+  used to be: **rose is your paddle itself**, coral is the opponent's, `--p-hot`
+  is Expand's tint, and amber is the ball. The tip tint needs a colour none of
+  those four use, or it will misread as one of them.
+- A test should read canvas pixels at the band's edge, the way the existing
+  Clutch-meter tests already do, rather than asserting on state — per
+  `CLAUDE.md`, a meter nobody can see is precisely the failure this is fixing,
+  and the same goes for a hitbox.
+- Closely related to `pong-explain-the-modes` below, which is the *text* answer
+  to the same hidden mechanic. Doing this one first may settle that entry's open
+  question of whether the strategy needs spelling out in words at all.
+
 ### pong-serve-from-paddle — Serve from your own paddle, aimed where you choose
 
 **Gate: playtest, its own.** It changes the opening of every single point and
@@ -215,41 +254,6 @@ Three specific things were flagged during that work and never decided:
 
 `node tests/ai-sweep.js` and `node tests/volley-sweep.js` are the two rulers, and
 `games/pong/DESIGN.md` records what every figure in them means.
-
-### pong-charge-hitbox-tell — Color the paddle tips to show the Clutch hitbox
-
-**Gate: Gabriel looks at the colours before they ship.** Not a full playtest —
-this does not change how the game plays, only what it shows — but it is a new
-colour on the player's own paddle, which is worth a look before it lands.
-
-`ABILITY.clutch` already defines a band at each end of the player's paddle that
-counts as a close call toward filling the meter (`games/pong/script.js`, near the
-`clutch` config), and today it is completely invisible — the player has no way to
-know it exists, let alone aim for it. Tint the top and bottom band of the
-player's paddle to mark it.
-
-- **It must track the band's actual definition, not the paddle's drawn size.**
-  The comment on that constant is explicit about why: the band is a fraction of
-  the paddle's *base* size, not its current height, specifically so an active
-  Expand or Squeeze does not silently change where a close call registers. A tip
-  drawn as a fraction of the live `h` would disagree with where `onPlayerReturn()`
-  actually counts a close call whenever Expand or Squeeze is active — which is
-  the exact failure this entry exists to avoid. A hitbox indicator that lies is
-  worse than no indicator.
-- Read the same base-size fraction the close-call check itself uses; do not
-  recompute an independent one. `syncPaddleSize()` is still the only thing that
-  writes a paddle's live height, and this entry should not need to touch it.
-- Pick a colour that is not already claimed, and there is less room than there
-  used to be: **rose is your paddle itself**, coral is the opponent's, `--p-hot`
-  is Expand's tint, and amber is the ball. The tip tint needs a colour none of
-  those four use, or it will misread as one of them.
-- A test should read canvas pixels at the band's edge, the way the existing
-  Clutch-meter tests already do, rather than asserting on state — per
-  `CLAUDE.md`, a meter nobody can see is precisely the failure this is fixing,
-  and the same goes for a hitbox.
-- Closely related to `pong-explain-the-modes` below, which is the *text* answer
-  to the same hidden mechanic. Doing this one first may settle that entry's open
-  question of whether the strategy needs spelling out in words at all.
 
 ### pong-explain-the-modes — Say what the modes and the powerups actually do
 

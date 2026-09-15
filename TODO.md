@@ -40,7 +40,14 @@ on it. Work on how the site looks belongs in `design/TODO.md` rather than here,
 for the same reason a game's own work belongs in its folder: it has an owner and a
 seat of its own.
 
-## New games
+## Game ideas
+
+**This is an ideas list, not a backlog.** Nothing here is scheduled, scoped or
+agreed — an entry is a game somebody thought would be worth having, and that is
+all it is. Before building one, take it to Gabriel: what it should do, how big it
+is and whether it is next are all his calls. Entries here are not in priority
+order, and a slug only becomes real work once it has an entry with constraints in
+it.
 
 ### reaction-time-game — Reaction time test
 
@@ -48,11 +55,42 @@ seat of its own.
 
 See the Human Benchmark version for the shape of it.
 
+### Added 2026-09-15, by Gabriel, no detail yet
+
+- Wordle
+- Scrabble
+- Asteroids (the Atari one)
+- Galaga
+- Solitaire
+- Spider solitaire
+- Breakout
+- Crossword puzzles
+
 ## Site-wide
 
 Work on how the site **looks** is not here. It belongs to the art director, and
 its backlog is `design/TODO.md`, beside the design itself in `design/DESIGN.md`.
 See `ART-DIRECTOR.md` for the seat.
+
+### site-framework-migration — Decide whether the site moves to a framework
+
+**Big, and not a coding task until it has been decided.** Raised by Gabriel on
+2026-09-15: the question is whether to migrate before the site is built out much
+further, because every game added raises the cost of moving later.
+
+`CLAUDE.md` currently rules a build step out — no framework, no build, one
+dependency, files served as-is — and that is the thing this entry is asking to
+revisit, not something to work around. So this is a decision first: what a
+framework would buy at this size, what it would cost (the page contract, the
+classic-script testing affordance that lets the suite call `restart()` and read
+`grid` directly, and the "no build step" deploy straight from the repo all
+depend on the current shape), and what would have to change in the docs.
+
+**Gabriel's note, 2026-09-15:** maybe wait until meetgabe.dev is done — that may
+get a simple framework, and the experience there would be worth having before
+taking this on.
+
+Nothing starts here without him saying so.
 
 ### site-favicon — The site has no favicon
 
