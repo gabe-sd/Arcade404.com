@@ -21,14 +21,27 @@ const { check, report } = makeChecks();
   check("given count matches rendered givens",
     (await page.$$("#board .cell.given")).length === givenCount, givenCount);
 
-  console.log("2. a given cell cannot be selected or edited");
+  console.log("2. a given cell selects and scans, but still takes no digit");
+  // It used to refuse selection outright. Selecting one now lights its row,
+  // column and box - which is how you check where a digit is already spoken
+  // for - and the guard that matters, that it cannot be typed into, is below.
   const firstGivenIndex = await page.evaluate(() => {
     for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++)
       if (givens[r][c] !== 0) return r * 9 + c;
   });
   const cells = () => page.$$("#board .cell");
-  await (await cells())[firstGivenIndex].click();
-  check("no cell becomes selected", (await page.$$("#board .cell.selected")).length === 0);
+  const givenCell = (await cells())[firstGivenIndex];
+  const givenText = await givenCell.textContent();
+  await givenCell.click();
+  check("the given becomes selected",
+    await givenCell.evaluate((el) => el.classList.contains("selected")));
+  check("its scan is lit", (await page.$$("#board .cell.peer")).length === 20);
+  await page.keyboard.press("5");
+  check("typing into it changes nothing", (await givenCell.textContent()) === givenText,
+    await givenCell.textContent());
+  await page.click(".num-btn.erase");
+  check("the eraser does not empty it either",
+    (await givenCell.textContent()) === givenText, await givenCell.textContent());
 
   console.log("3. selecting an editable cell and typing a digit fills it");
   const firstEmptyIndex = await page.evaluate(() => {
@@ -184,6 +197,67 @@ const { check, report } = makeChecks();
   check("panel hides again", !(await page.isVisible("#instructions")));
   check("label restored", (await page.textContent("#help-toggle")) === "How to play",
     await page.textContent("#help-toggle"));
+
+  console.log("13. both halves of a clash are marked, not just the one just typed");
+  // conflicts() is symmetric, so a duplicate pair is two wrong cells. Only the
+  // cell being typed into used to be re-rendered, which left the older half of
+  // every pair unmarked - a player clearing the red one was then looking at a
+  // board that looked clean and was not. Two entered cells, not a given: a
+  // given never carries .wrong, so the pair has to be one the player made.
+  await page.evaluate(() => { restart(); });
+  const pair = await page.evaluate(() => {
+    for (let r = 0; r < 9; r++) {
+      const free = [];
+      for (let c = 0; c < 9; c++) if (givens[r][c] === 0) free.push(c);
+      if (free.length < 2) continue;
+      for (let d = 1; d <= 9; d++) {
+        if (!grid[r].includes(d)) return { r, a: free[0], b: free[1], value: d };
+      }
+    }
+    return null;
+  });
+  const cellAt = async (r, c) => (await cells())[r * 9 + c];
+  const hasWrong = (el) => el.evaluate((e) => e.classList.contains("wrong"));
+  const first = await cellAt(pair.r, pair.a);
+  const second = await cellAt(pair.r, pair.b);
+  await first.click();
+  await page.keyboard.press(String(pair.value));
+  check("the first of the pair is clean on its own", !(await hasWrong(first)));
+  await second.click();
+  await page.keyboard.press(String(pair.value));
+  check("the cell just typed is marked", await hasWrong(second));
+  check("the older half of the pair is marked too", await hasWrong(first));
+  await page.keyboard.press("Backspace");
+  check("clearing one un-marks the survivor", !(await hasWrong(first)));
+  check("and the cleared cell is unmarked", !(await hasWrong(second)));
+
+  console.log("14. selecting a cell lights its row, column and box");
+  await page.evaluate(() => { restart(); });
+  const scanTarget = await page.evaluate(() => {
+    for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++)
+      if (givens[r][c] === 0) return { r, c };
+  });
+  await (await cellAt(scanTarget.r, scanTarget.c)).click();
+  const scan = await page.evaluate(({ r, c }) => {
+    const lit = [...document.querySelectorAll("#board .cell")]
+      .map((el, i) => (el.classList.contains("peer") ? i : -1))
+      .filter((i) => i >= 0);
+    return { lit, expected: peers(r, c).map(([pr, pc]) => pr * 9 + pc).sort((a, b) => a - b) };
+  }, scanTarget);
+  check("exactly the 20 peers are lit", scan.lit.length === 20, scan.lit.length);
+  check("and they are the right ones",
+    JSON.stringify(scan.lit) === JSON.stringify(scan.expected));
+  check("the selected cell is not also lit as a peer",
+    !scan.lit.includes(scanTarget.r * 9 + scanTarget.c));
+  // Moving the selection has to move the scan with it, not add to it.
+  const elsewhere = await page.evaluate(({ r, c }) => {
+    for (let rr = 0; rr < 9; rr++) for (let cc = 0; cc < 9; cc++)
+      if (givens[rr][cc] === 0 && rr !== r && cc !== c) return { r: rr, c: cc };
+  }, scanTarget);
+  await (await cellAt(elsewhere.r, elsewhere.c)).click();
+  check("the scan moves rather than accumulating",
+    (await page.$$("#board .cell.peer")).length === 20);
+  check("only one cell is selected", (await page.$$("#board .cell.selected")).length === 1);
 
   check("no page errors", errors.length === 0, errors.join("; "));
 

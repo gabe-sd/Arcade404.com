@@ -706,19 +706,28 @@ function toggleInstructions() {
   helpToggle.textContent = open ? "Hide instructions" : "How to play";
 }
 
+// A given can be selected as well as an empty cell - selecting one lights its
+// row, column and box, which is how you check where a digit is already spoken
+// for. It still takes no digit: placeDigit() guards isGiven separately.
 function selectCell(r, c) {
-  if (gameOver || isGiven(r, c)) return;
+  if (gameOver) return;
   selected = [r, c];
   renderSelection();
 }
 
 function renderSelection() {
+  // The selected cell's peers are lit as well as the cell itself. Built as a
+  // lookup rather than by asking peers() per cell, so this stays one pass over
+  // the board instead of 81 of them.
+  const lit = new Set();
+  if (selected) {
+    for (const [pr, pc] of peers(selected[0], selected[1])) lit.add(pr * SIZE + pc);
+  }
   for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
-      cellEls[r][c].classList.toggle(
-        "selected",
-        !!selected && selected[0] === r && selected[1] === c
-      );
+      const isSelected = !!selected && selected[0] === r && selected[1] === c;
+      cellEls[r][c].classList.toggle("selected", isSelected);
+      cellEls[r][c].classList.toggle("peer", !isSelected && lit.has(r * SIZE + c));
     }
   }
 }
@@ -735,6 +744,11 @@ function placeDigit(digit) {
   if (isGiven(r, c)) return;
   grid[r][c] = digit;
   renderCell(r, c);
+  // The peers too, not just the cell typed into. conflicts() is symmetric, so
+  // both halves of a clash are wrong - but only the one re-rendered gets the
+  // class, which left the older half of every pair unmarked. Clearing a cell
+  // is the same call with digit 0, so this un-marks the survivor as well.
+  for (const [pr, pc] of peers(r, c)) renderCell(pr, pc);
   saveProgress();
   disarmResetButtons();
   checkWin();

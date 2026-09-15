@@ -51,12 +51,6 @@ Minesweeper's on 2026-09-15**, leaving Sudoku below.
 shared `#instructions` panel are in place and covered by
 `tests/contract.test.js`. What is left is the inside of the board.
 
-### redesign-sudoku — Sudoku
-
-`style.css` only. The grid's box borders are drawn with `--fg` and the selected cell
-with `color-mix()` on `--accent`; both want checking against the new values rather than
-assuming they carry over.
-
 ### redesign-emoji-glyphs — The emoji, which are the last off-palette thing
 
 Colour emoji are rendered by the OS font, not by ours, so they ignore the palette
@@ -73,10 +67,11 @@ known about:
 | pong | status line and the menu | `🎉` ×2 |
 | pong | Play button, panel, footer | `▶`, `↑`/`↓` ×2 |
 | sudoku | status line | `🎉` |
-| sudoku | erase button, panel | `⌫` ×2 |
 
 Flappy Bird's, Tic Tac Toe's and Minesweeper's emoji are all gone, each taken by
-that game's own phase. The hub and the About page have none.
+that game's own phase, and **Sudoku's `⌫` went with its own on 2026-09-15** — the
+button carries a drawn glyph now and the panel line says "the erase key". The hub
+and the About page have none.
 
 **The breadcrumb `←` is the one to notice**, and it had never been counted: it is
 on six pages rather than one, it is the most-seen glyph in the set, and it is the
@@ -121,14 +116,18 @@ Nothing here is open any more; it is recorded so a later session does not re-dec
 ### The arrows and the other substituted glyphs
 
 **Flappy Bird's are done** — its panel and footer now say "Up arrow" in words,
-Gabriel's call on 2026-09-15. Three sets are left, in rising order of difficulty:
+Gabriel's call on 2026-09-15. **Sudoku's is done too**, and it settled the general
+case: a glyph on a *button* is drawn rather than reworded. Its erase key carries an
+SVG backspace on the hub's 48 grid, at the hub's weight, which is the answer chess,
+Minesweeper and Flappy Bird already reached for their own drawings. Only the panel
+line needed words, and "the erase key" was enough. Two sets are left:
 
-- **Pong** says `W/S or ↑/↓` twice, which has no short rewrite, plus `▶` on Play.
-- **Sudoku** uses `⌫` in its panel and as an erase button's whole label, where a
-  word has to fit a button.
-- **The breadcrumb `←`**, on all six game pages. Hardest of the three despite being
-  one character: it is the frame's, it is decoration rather than an instruction, and
-  dropping it may simply be right where the other two need words.
+- **Pong** says `W/S or ↑/↓` twice, which has no short rewrite. Its `▶` is on the
+  Play button and is Sudoku's case exactly — draw it; the arrows in the sentence
+  are the part that needs wording.
+- **The breadcrumb `←`**, on all six game pages. Hardest despite being one
+  character: it is the frame's, it is decoration rather than an instruction, and
+  dropping it may simply be right where the sentence needs words.
 
 VT323 has no arrows: it is monospace, so every glyph it really has measures the same
 width, and measured on a served page at 22px on 2026-09-10, `M`, `W` and `i` are
