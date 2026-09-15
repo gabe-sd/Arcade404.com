@@ -78,6 +78,17 @@ a `TODO.md` entry the branch **is** that entry's slug, so one string finds the e
 the discussion and the diff. If you catch yourself editing on `main`,
 `git checkout -b <name>` carries uncommitted changes across.
 
+**If you squash, name the base.** `git reset --soft main` re-parents onto wherever
+`main` is *now*: the commit you make next takes main's tip as its parent and your old
+tree as its content, so everything that landed while you worked is reverted — with no
+conflict, nothing in the output to notice, and `git merge-base --is-ancestor main
+HEAD` still passing, because main really is the parent. That was reproduced, not
+guessed. Use `git reset --soft $(git merge-base main HEAD)`, which re-parents onto
+where you branched from: the branch is then visibly stale, so the absorb step under
+"Handing over" catches it rather than being skipped. It costs a longer command and an
+absorb after every squash. It is wrong if a branch squashed the unsafe way conflicts
+on merge or fails the ancestor check — either would mean it was already caught.
+
 If your harness named the branch `worktree-<slug>`, rename it to the bare slug:
 `tests/docs-check.js` tolerates the prefix so a landed entry is still recognised, but
 nothing else does.
