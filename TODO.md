@@ -54,12 +54,6 @@ Work on how the site **looks** is not here. It belongs to the art director, and
 its backlog is `design/TODO.md`, beside the design itself in `design/DESIGN.md`.
 See `ART-DIRECTOR.md` for the seat.
 
-### site-readme-for-humans — The README is written for agents, not visitors
-
-It is the front page of a public repo, but it reads like the internal docs beside
-it. Review with Gabriel before rewriting — what a visitor should get from it is
-his call.
-
 ### site-favicon — The site has no favicon
 
 Every page 404s `/favicon.ico`, because browsers ask for it whether or not you
