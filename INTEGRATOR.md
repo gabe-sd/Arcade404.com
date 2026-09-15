@@ -152,6 +152,14 @@ the branch has absorbed everything on `main` and the merged tree is identical to
 branch tree — there is nothing to conflict. If it is not, the branch is stale: hand
 it back.
 
+**What it does not prove is that the branch only adds.** A branch squashed with
+`git reset --soft main` after `main` moved passes this check while *reverting*
+everything that landed in between — main really is its parent, and the deletion is
+the branch's own content, so there is nothing to conflict and nothing in the output
+to notice. Reproduced. So read the `git diff --stat main..<branch>` above for files
+the branch had no business touching, not only for `package.json`. One here listed
+three backlog files its author had never opened. `WORKER.md` carries the safe form.
+
 A `package.json` that gained a dependency means `npm install` before testing.
 
 `npm test` is entirely headless, so it is safe to run whatever else is on the
